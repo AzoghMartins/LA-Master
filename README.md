@@ -106,7 +106,7 @@ Source/dsp/Assistant.*      target curves, track analysis, Master Assistant (ren
 Source/Parameters.*         120 parameters and the factory presets
 Source/PluginProcessor.*    JUCE processor: buses, Assistant worker thread, reference loading, presets, state
 Source/gui/                 look and feel, knobs, chain strip, spectrum / loudness / stereo displays, editor
-tests/EngineTests.cpp       41 DSP tests (R128 accuracy, true peak, crossovers, every module, latency, assistant...)
+tests/EngineTests.cpp       40 DSP tests (R128 accuracy, true peak, crossovers, every module, latency, assistant...)
 tests/PluginIntegrationTest  drives processor + editor like a host; can render a screenshot
 ```
 
