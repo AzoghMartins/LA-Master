@@ -1,10 +1,18 @@
 # LA-Master
 
-An all-in-one mastering chain for Linux, Windows and macOS (VST3, plus LV2 / Standalone on Linux and AU on macOS), in the spirit of iZotope Ozone:
+An all-in-one mastering chain for Linux, Windows and macOS, in the spirit of iZotope Ozone:
 EQ, adaptive tonal balance, dynamic EQ, bus "glue" compression, multiband dynamics, a multiband exciter,
 a stereo imager and a true-peak maximizer. It also has EBU R128 loudness metering, a Master Assistant,
 reference-track matching, gain-matched A/B, and dither. It uses the same look as LA-Trigger, LA-VocalChain
 and LA-AmpSuite.
+
+| Platform | Formats |
+|---|---|
+| Windows 10/11 (x64) | VST3 |
+| macOS 10.13+ (Apple silicon and Intel) | VST3, AU |
+| Linux (x86_64) | VST3, LV2, Standalone |
+
+Ready-to-install builds for all three are on the [Releases](https://github.com/AzoghMartins/LA-Master/releases) page.
 
 ![LA-Master](docs/screenshot.png)
 
