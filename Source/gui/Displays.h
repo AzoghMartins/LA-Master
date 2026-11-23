@@ -17,6 +17,7 @@ juce::Colour moduleColour (ModuleId m);
 class SpectrumDisplay : public juce::Component, public juce::SettableTooltipClient
 {
 public:
+    void paintOverChildren (juce::Graphics& g) override { Hardware::drawGlass (g, getLocalBounds().toFloat()); }
     explicit SpectrumDisplay (MasterProcessor&);
 
     void pullSpectrum();
@@ -64,6 +65,7 @@ private:
 class LoudnessHistory : public juce::Component, public juce::SettableTooltipClient
 {
 public:
+    void paintOverChildren (juce::Graphics& g) override { Hardware::drawGlass (g, getLocalBounds().toFloat()); }
     explicit LoudnessHistory (MasterProcessor&);
     void addFrame (const LoudnessFrame& f);
     void paint (juce::Graphics&) override;
@@ -83,6 +85,7 @@ private:
 class StereoScope : public juce::Component, public juce::SettableTooltipClient
 {
 public:
+    void paintOverChildren (juce::Graphics& g) override { Hardware::drawGlass (g, getLocalBounds().toFloat()); }
     explicit StereoScope (MasterProcessor&);
     void pull();
     void paint (juce::Graphics&) override;
@@ -100,6 +103,7 @@ private:
 class LoudnessPanel : public juce::Component, public juce::SettableTooltipClient
 {
 public:
+    void paintOverChildren (juce::Graphics& g) override { Hardware::drawGlass (g, getLocalBounds().toFloat()); }
     explicit LoudnessPanel (MasterProcessor&);
     void tick();
     void paint (juce::Graphics&) override;

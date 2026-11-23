@@ -24,10 +24,13 @@ BandStrip::BandStrip (const juce::String& t, juce::Colour c, std::atomic<float>*
 void BandStrip::paint (juce::Graphics& g)
 {
     auto r = getLocalBounds().toFloat().reduced (2.0f, 0.0f);
-    g.setColour (Colours::panelLight.withAlpha (0.5f));
+    g.setColour (juce::Colours::black.withAlpha (0.28f));
     g.fillRoundedRectangle (r, 5.0f);
-    g.setColour (colour);
-    g.fillRoundedRectangle (r.getX() + 6.0f, 9.0f, 8.0f, 8.0f, 2.0f);
+    g.setColour (juce::Colours::black.withAlpha (0.5f));
+    g.drawRoundedRectangle (r.reduced (0.5f), 5.0f, 1.0f);
+    g.setColour (juce::Colours::white.withAlpha (0.05f));
+    g.drawLine (r.getX() + 5.0f, r.getBottom() - 0.5f, r.getRight() - 5.0f, r.getBottom() - 0.5f, 1.0f);
+    Hardware::drawLed (g, { r.getX() + 7.0f, 10.0f, 6.0f, 6.0f }, colour, true);
     g.setColour (Colours::text);
     g.setFont (uiFont (11.0f, true));
     g.drawText (title, 20, 4, getWidth() - 24, 18, juce::Justification::centredLeft);
@@ -35,10 +38,9 @@ void BandStrip::paint (juce::Graphics& g)
     {
         shownGr = juce::jmax (reduction->load(), shownGr - 0.4f);
         auto bar = juce::Rectangle<float> (r.getRight() - 64.0f, 8.0f, 56.0f, 9.0f);
-        g.setColour (Colours::graphBg);
-        g.fillRoundedRectangle (bar, 2.0f);
+        Hardware::drawRecess (g, bar, 2.0f);
         g.setColour (Colours::danger);
-        g.fillRoundedRectangle (bar.withWidth (bar.getWidth() * juce::jlimit (0.0f, 1.0f, shownGr / 12.0f)), 2.0f);
+        g.fillRoundedRectangle (bar.reduced (1.0f).withWidth ((bar.getWidth() - 2.0f) * juce::jlimit (0.0f, 1.0f, shownGr / 12.0f)), 1.5f);
         g.setFont (uiFont (9.0f));
         g.setColour (Colours::textDim);
         g.drawText (juce::String (shownGr, 1), bar.translated (-34.0f, 0.0f).withWidth (30.0f), juce::Justification::centredRight);
@@ -674,13 +676,7 @@ void MainPanel::resized()
 
 void MainPanel::paint (juce::Graphics& g)
 {
-    g.fillAll (Colours::background);
-
-    auto header = juce::Rectangle<int> (0, 0, baseWidth, 46);
-    g.setGradientFill (juce::ColourGradient (Colours::panelLight, 0.0f, 0.0f, Colours::panel, 0.0f, 46.0f, false));
-    g.fillRect (header);
-    g.setColour (Colours::edge);
-    g.drawHorizontalLine (46, 0.0f, (float) baseWidth);
+    Hardware::drawChassis (g, { 0, 0, baseWidth, baseHeight }, 46);
 
     // Logo: a waveform squeezed under a ceiling line
     {
@@ -692,7 +688,7 @@ void MainPanel::paint (juce::Graphics& g)
             const float y = y0 + 6.5f * std::sin (t * 12.0f) * (0.4f + 0.6f * t);
             if (i == 0) wave.startNewSubPath (x0 + t * 28.0f, y); else wave.lineTo (x0 + t * 28.0f, y);
         }
-        g.setColour (Colours::accent);
+        g.setColour (Colours::signature);
         g.strokePath (wave, juce::PathStrokeType (2.0f, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
         g.setColour (Colours::danger);
         g.fillRoundedRectangle (x0 - 1.0f, y0 - 9.5f, 31.0f, 2.0f, 1.0f);
@@ -700,7 +696,7 @@ void MainPanel::paint (juce::Graphics& g)
         g.setFont (uiFont (21.0f, true));
         g.setColour (Colours::text);
         g.drawText ("LA", 50, 8, 30, 30, juce::Justification::centredLeft);
-        g.setColour (Colours::accent);
+        g.setColour (Colours::signature);
         g.drawText ("MASTER", 78, 8, 100, 30, juce::Justification::centredLeft);
         g.setColour (Colours::textDim);
         g.setFont (uiFont (10.0f));
