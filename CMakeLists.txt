@@ -1,13 +1,25 @@
 cmake_minimum_required(VERSION 3.22)
 
+# macOS: one universal binary for Apple silicon and Intel Macs. Windows: link the C/C++ runtime
+# statically so the plugin does not need the Visual C++ redistributable. (Both must be set before project().)
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "macOS architectures")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum macOS version")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 project(LAMaster VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(MSVC)
+    # M_PI and friends; sources are UTF-8
+    add_compile_definitions(_USE_MATH_DEFINES)
+    add_compile_options(/utf-8)
+endif()
+
 option(LAM_BUILD_TESTS "Build the DSP and plugin tests" ON)
-option(LAM_COPY_AFTER_BUILD "Install plugins into ~/.vst3 and ~/.lv2 after building" OFF)
+option(LAM_COPY_AFTER_BUILD "Install the plugins into the user/system plugin folders after building" OFF)
 set(LAM_JUCE_DIR "" CACHE PATH "Path to a local JUCE checkout (fetched from GitHub when empty)")
 
 # ---------------------------------------------------------------------------------------------
@@ -58,6 +70,15 @@ set(LAM_DEFINITIONS
     JUCE_USE_CURL=0
     JUCE_USE_MP3AUDIOFORMAT=1)
 
+# VST3 everywhere; LV2 + Standalone on Linux; AU on macOS
+if(WIN32)
+    set(LAM_FORMATS VST3)
+elseif(APPLE)
+    set(LAM_FORMATS VST3 AU)
+else()
+    set(LAM_FORMATS VST3 LV2 Standalone)
+endif()
+
 # ---------------------------------------------------------------------------------------------
 # Plugin
 juce_add_plugin(LAMaster
@@ -66,7 +87,7 @@ juce_add_plugin(LAMaster
     BUNDLE_ID "com.la-audio.lamaster"
     PLUGIN_MANUFACTURER_CODE LaAu
     PLUGIN_CODE LaMs
-    FORMATS VST3 LV2 Standalone
+    FORMATS ${LAM_FORMATS}
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
