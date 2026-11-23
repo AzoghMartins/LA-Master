@@ -1,10 +1,18 @@
 # LA-Master
 
-An all-in-one mastering chain for Linux (VST3 / LV2 / Standalone), in the spirit of iZotope Ozone:
+An all-in-one mastering chain for Linux, Windows and macOS, in the spirit of iZotope Ozone:
 EQ, adaptive tonal balance, dynamic EQ, bus "glue" compression, multiband dynamics, a multiband exciter,
 a stereo imager and a true-peak maximizer. It also has EBU R128 loudness metering, a Master Assistant,
 reference-track matching, gain-matched A/B, and dither. It uses the same look as LA-Trigger, LA-VocalChain
 and LA-AmpSuite.
+
+| Platform | Formats |
+|---|---|
+| Windows 10/11 (x64) | VST3 |
+| macOS 10.13+ (Apple silicon and Intel) | VST3, AU |
+| Linux (x86_64) | VST3, LV2, Standalone |
+
+Ready-to-install builds for all three are on the [Releases](https://github.com/AzoghMartins/LA-Master/releases) page.
 
 ![LA-Master](docs/screenshot.png)
 
@@ -73,7 +81,9 @@ Constant at 2.75 ms (132 samples at 48 kHz): 2x oversampling in the Exciter and 
 plus a 2 ms limiter look-ahead and true-peak interpolation. It does not change with settings and is reported
 to the host.
 
-## Building (Linux)
+## Building
+
+### Linux
 
 ```bash
 sudo apt install build-essential cmake ninja-build libasound2-dev libx11-dev libxrandr-dev \
@@ -94,7 +104,44 @@ Options:
 - `-DLAM_COPY_AFTER_BUILD=ON` installs the plugins automatically.
 - `-DLAM_ENGINE_ONLY=ON` builds only the DSP engine and its tests (no JUCE needed).
 
-GitHub Actions builds every push and uploads a ready-to-install tarball as an artifact.
+### Windows
+
+Needs Visual Studio 2022 (the "Desktop development with C++" workload) and CMake 3.22 or newer.
+
+```powershell
+cmake -B build -G "Visual Studio 17 2022" -A x64          # downloads JUCE 8 automatically
+cmake --build build --config Release --parallel
+ctest --test-dir build -C Release --output-on-failure       # optional: run the tests
+```
+
+Install by copying `build\LAMaster_artefacts\Release\VST3\LA-Master.vst3` into `C:\Program Files\Common Files\VST3`.
+
+### macOS
+
+Needs Xcode (or the Command Line Tools) and CMake 3.22 or newer. The build is a universal binary
+(Apple silicon and Intel) and runs on macOS 10.13 or newer.
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release                   # downloads JUCE 8 automatically
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure                  # optional: run the tests
+
+# install
+cp -R build/LAMaster_artefacts/Release/VST3/LA-Master.vst3 ~/Library/Audio/Plug-Ins/VST3/
+cp -R build/LAMaster_artefacts/Release/AU/LA-Master.component ~/Library/Audio/Plug-Ins/Components/
+```
+
+### Downloads
+
+GitHub Actions builds every push on Linux, Windows and macOS and uploads ready-to-install archives as
+artifacts. Tagged releases carry all three:
+
+- `LA-Master-linux-x86_64.tar.gz`: VST3, LV2 and Standalone. Copy them into `~/.vst3` and `~/.lv2`.
+- `LA-Master-windows-x64.zip`: VST3. Extract it into `C:\Program Files\Common Files\VST3`.
+- `LA-Master-macos-universal.zip`: VST3 and AU. Copy them into `~/Library/Audio/Plug-Ins/VST3` and
+  `~/Library/Audio/Plug-Ins/Components`. The plugins are not notarized, so after downloading, clear the
+  quarantine flag once before starting your DAW:
+  `xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/LA-Master.vst3 ~/Library/Audio/Plug-Ins/Components/LA-Master.component`
 
 ## Project layout
 
