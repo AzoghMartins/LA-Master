@@ -34,7 +34,8 @@ jobs:
       - name: Package
         run: |
           cd build/LAMaster_artefacts/Release
-          tar czf ../../../LA-Master-linux-x86_64.tar.gz VST3/LA-Master.vst3 LV2/LA-Master.lv2 Standalone/LA-Master
+          cp ../../../LICENSE LICENSE-LA-Master.txt
+          tar czf ../../../LA-Master-linux-x86_64.tar.gz VST3/LA-Master.vst3 LV2/LA-Master.lv2 Standalone/LA-Master LICENSE-LA-Master.txt
 
       - uses: actions/upload-artifact@v4
         with:
@@ -57,7 +58,9 @@ jobs:
 
       - name: Package
         shell: pwsh
-        run: Compress-Archive -Path build/LAMaster_artefacts/Release/VST3/LA-Master.vst3 -DestinationPath LA-Master-windows-x64.zip
+        run: |
+          Copy-Item LICENSE LICENSE-LA-Master.txt
+          Compress-Archive -Path build/LAMaster_artefacts/Release/VST3/LA-Master.vst3, LICENSE-LA-Master.txt -DestinationPath LA-Master-windows-x64.zip
 
       - uses: actions/upload-artifact@v4
         with:
@@ -93,7 +96,8 @@ jobs:
       - name: Package
         run: |
           cd build/LAMaster_artefacts/Release
-          zip -r -y ../../../LA-Master-macos-universal.zip VST3/LA-Master.vst3 AU/LA-Master.component
+          cp ../../../LICENSE LICENSE-LA-Master.txt
+          zip -r -y ../../../LA-Master-macos-universal.zip VST3/LA-Master.vst3 AU/LA-Master.component LICENSE-LA-Master.txt
 
       - uses: actions/upload-artifact@v4
         with:
