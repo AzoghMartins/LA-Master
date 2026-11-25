@@ -59,7 +59,7 @@ private:
     std::vector<std::unique_ptr<juce::Component>> owned;
 
     // Header
-    juce::ComboBox presetBox, targetBox;
+    MenuBox presetBox, targetBox;
     std::unique_ptr<Choice> styleChoice;
     PillButton saveButton { "SAVE" }, assistButton { "ASSIST", Colours::learn }, refButton { "REF", Colours::learn };
     std::unique_ptr<ParamPill> comparePill, matchPill, deltaPill;
